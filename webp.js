@@ -25,7 +25,7 @@ Module.onRuntimeInitialized = async (_) => {
     Module.HEAP8.set(image.data, p);
     // ... call encoder ...
 
-    api.encode(p, image.width, image.height, 100);
+    api.encode(p, image.width, image.height, 75);
     const resultPointer = api.get_result_pointer();
     const resultSize = api.get_result_size();
     const resultView = new Uint8Array(
