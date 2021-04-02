@@ -1,0 +1,65 @@
+.filelist {
+  padding: 0.5em;
+  background-color: white;
+}
+.dropzone {
+  height: 300px;
+  margin: 1em 0;
+  box-sizing: border-box;
+  border: 5px dashed #aaa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.dropzone.over {
+  background-color: rgb(255, 255, 255);
+}
+
+body {
+  background-color: #ddd;
+  max-width: 800px;
+  margin: 0 auto;
+}
+.close-directory {
+  border: 0;
+  background: none;
+  color: currentColor;
+}
+.gallery__header {
+  margin-top: 2rem;
+  background: #333;
+  color: white;
+  padding: 0.5em;
+  display: flex;
+}
+
+.loaddir {
+  width: 300px;
+  height: 150px;
+  background: white;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: space-between;
+  margin-top: 10em;
+  margin: 10em auto;
+}
+
+.loaddir__opendir {
+  font-size: 2em;
+  padding: 0.5em 1em;
+  border-radius: 4px;
+  border: 0;
+}
+.loaddir__history {
+  cursor: pointer;
+  text-decoration: underline;
+}
+.dropzone__info{
+  color: #999;
+  font-size: 1.6em;
+  font-weight: 900;
+}

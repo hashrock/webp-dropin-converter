@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebP Converter</title>
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+  <body>
+    <div id="app">
+      {{message}}
+
+      <div v-if="parent != null">
+        <div class="gallery__header">
+          {{parent.name}}
+          <button class="close-directory" @click="closeDirectory">
+            <svg
+              id="i-eject"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 32 32"
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentcolor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+            >
+              <path d="M30 18 L16 5 2 18Z M2 25 L30 25" />
+            </svg>
+          </button>
+        </div>
+
+        <div>
+          <div class="filelist">
+            <div v-for="child in children">{{child}}</div>
+          </div>
+
+          <div
+            :class="{'over': isDragOver}"
+            class="dropzone"
+            @dragover.prevent="onDrag('over')"
+            @dragleave.prevent="onDrag('leave')"
+            @drop.prevent="onDrop"
+          >
+            <div class="dropzone__info">Drop Image Here</div>
+            <div>
+              <input type="file" @change="onChangeFile" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="parent == null" class="loaddir">
+        <div>
+          <button class="loaddir__opendir" @click="openDirectory">
+            Open Directory
+          </button>
+        </div>
+        <div>
+          <span
+            class="loaddir__history"
+            @click="selectDirectory(recentFile)"
+            v-for="recentFile in recentFiles"
+          >
+            {{recentFile.name}}
+          </span>
+        </div>
+      </div>
+      <!-- <button id="b">r</button> -->
+    </div>
+    <script src="./a.out.js"></script>
+    <script src="./webp.js"></script>
+    <script type="module" src="index.js"></script>
+  </body>
+</html>
