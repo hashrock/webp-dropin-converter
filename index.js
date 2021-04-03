@@ -9,6 +9,29 @@ import {
 const store = createStore("hashrock", "play-with-lfs");
 let pasteHandler
 
+const template = (images) => {
+  const imagestag = images.map((img)=>{
+    return `<img src="${img}" />`
+  })
+  return `
+    <html>
+    <head>
+    <style>
+    body{
+      background: #333;
+    }
+    img{
+      max-width:100%;
+    }
+    </style>
+    </head>
+    <body>
+      ${imagestag}
+    </body>
+    </html>
+  `
+}
+
 var app = new Vue({
   el: "#app",
   data: {
@@ -35,8 +58,11 @@ var app = new Vue({
     async readDir(handle) {
       this.children = [];
       for await (const [name, entry] of handle) {
-        this.children.push(name);
+        if(name.indexOf("webp") >= 0){
+          this.children.push(name);
+        }
       }
+      await this.updateHtml()
     },
     async selectDirectory(handle) {
       await verifyPermission(handle, true);
@@ -66,6 +92,13 @@ var app = new Vue({
     },
     async onChangeFile(ev) {
       await this.uploadImage(ev.target.files[0]);
+    },
+    async updateHtml(){
+      const h = await createFile(
+        this.parent,
+        "index.html"
+      );
+      await writeToFile(h, template(this.children));
     },
     async uploadImage(file, name) {
       const reader = new FileReader();
