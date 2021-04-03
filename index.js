@@ -23,7 +23,7 @@ var app = new Vue({
     async onDrop(event) {
       event.preventDefault();
       const files = event.dataTransfer.files
-      if (files.length !== 1 || files[0].type.indexOf('image') !== 0) {
+      if (!checkFileImage(files)) {
         return
       }
       this.isDragOver = false;
@@ -89,18 +89,26 @@ var app = new Vue({
     this.recentFiles = (await get("recentFiles", store)) || [];
 
     pasteHandler = document.addEventListener("paste", (e) => {
-      if (!e.clipboardData 
-              || !e.clipboardData.types
-              || (e.clipboardData.types.length != 1)
-              || (e.clipboardData.types[0] != "Files")) {
-              return true;
+      if (!isClipboardImage(e)) {
+        return true;
       }
       var imageFile = e.clipboardData.items[0].getAsFile();
       this.uploadImage(imageFile, "pasted" + Math.floor(new Date().getTime() / 1000))
-  
-  });    
+    });
   },
-  beforeDestroy(){
+  beforeDestroy() {
     document.removeEventListener("paste", pasteHandler)
   }
 });
+
+function isClipboardImage(e) {
+  return e.clipboardData
+    && e.clipboardData.types
+    && (e.clipboardData.types.length === 1)
+    && (e.clipboardData.types[0] === "Files");
+}
+
+function checkFileImage(files) {
+  return files.length === 1 && files[0].type.indexOf('image') === 0;
+}
+
