@@ -57,7 +57,11 @@
           </div>
           <button @click="save(selectedFile)">Save</button>
         </div>
-        <textarea v-model="result" spellcheck="false"></textarea>
+        <textarea
+          v-model="result"
+          spellcheck="false"
+          @keydown.tab.prevent="ontab"
+        ></textarea>
       </div>
     </div>
 
@@ -86,6 +90,17 @@
           };
         },
         methods: {
+          ontab(e) {
+            const obj = e.target
+            var cursorPosition = obj.selectionStart;
+            var cursorLeft = obj.value.substr(0, cursorPosition);
+            var cursorRight = obj.value.substr(
+              cursorPosition,
+              obj.value.length
+            );
+            obj.value = cursorLeft + "\t" + cursorRight;
+            obj.selectionEnd = cursorPosition + 1;
+          },
           async save(handle) {
             const writable = await handle.createWritable({
               keepExistingData: false,
