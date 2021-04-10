@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      li {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      #app {
+        display: flex;
+        height: 100%;
+      }
+      .nav {
+        width: 300px;
+        padding: 1em;
+      }
+
+      textarea {
+        padding: 1em;
+        flex: 1;
+        color: white;
+        background-color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="nav">
+        <button @click="openDir">Open</button>
+        <ul>
+          <li v-if="enableParent" @click="moveParent()">../</li>
+          <li v-for="f in files" @click="open(f)">
+            {{f.name}}<span v-if="f.kind === 'directory'">/</span>
+          </li>
+        </ul>
+      </div>
+
+      <textarea v-model="result"></textarea>
+    </div>
+
+    <script type="module">
+      import Vue from "https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.esm.browser.js";
+      import {
+        createFile,
+        readFromFile,
+        writeToFile,
+        verifyPermission,
+      } from "./fileutils.js";
+
+      let files = [];
+      let parents = [];
+
+      new Vue({
+        el: "#app",
+        data() {
+          return {
+            files: [],
+            result: "",
+            enableParent: false,
+          };
+        },
+        methods: {
+          async moveParent() {
+            parents.splice(parents.length - 1, 1);
+            files = await parents[parents.length - 1].values();
+            this.files = [];
+            for await (const entry of files) {
+              this.files.push(entry);
+            }
+            this.enableParent = parents.length > 1
+          },
+          async open(f) {
+            switch (f.kind) {
+              case "file":
+                var reader = new FileReader();
+                reader.onload = () => {
+                  this.result = reader.result;
+                };
+                reader.readAsBinaryString(await f.getFile());
+                return;
+              case "directory":
+                parents.push(f);
+                files = await parents[parents.length - 1].values();
+                this.files = [];
+                for await (const entry of files) {
+                  this.files.push(entry);
+                }
+                this.enableParent = parents.length > 1
+                return;
+            }
+          },
+          async openDir() {
+            parents = [];
+            parents.push(await window.showDirectoryPicker());
+            if (!parents[0]) {
+              return;
+            }
+            files = await parents[parents.length - 1].values();
+
+            this.files = [];
+            for await (const entry of files) {
+              this.files.push(entry);
+            }
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
