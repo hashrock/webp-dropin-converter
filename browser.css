@@ -63,3 +63,7 @@ button:hover{
 li:hover {
     background: #444;
 }
+
+li.selected {
+    color: #58ffcd;
+}

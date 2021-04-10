@@ -30,7 +30,7 @@
         </div>
         <ul>
           <li v-if="enableParent" @click="moveParent()">../</li>
-          <li v-for="f in files" @click="open(f)">
+          <li v-for="f in files" @click="open(f)" :class="{selected: f === selectedFile}">
             {{f.name}}<span v-if="f.kind === 'directory'">/</span>
           </li>
         </ul>
@@ -61,6 +61,7 @@
           v-model="result"
           spellcheck="false"
           @keydown.tab.prevent="ontab"
+          @keydown.ctrl.83.prevent="save(selectedFile)"
         ></textarea>
       </div>
     </div>
