@@ -23,6 +23,14 @@
         width: 300px;
         padding: 1em;
       }
+      .editor{
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .editor__nav{
+        display: flex;
+      }
 
       textarea {
         padding: 1em;
@@ -44,7 +52,13 @@
         </ul>
       </div>
 
-      <textarea v-model="result"></textarea>
+      <div class="editor">
+        <div class="editor__nav">
+          <button @click="save(selectedFile)">Save</button>
+          <div v-if="selectedFile">{{selectedFile.name}} <span v-if="result !== resultOld"> *</span></div>
+        </div>
+        <textarea v-model="result"></textarea>
+      </div>
     </div>
 
     <script type="module">
@@ -65,10 +79,18 @@
           return {
             files: [],
             result: "",
+            resultOld: "",
             enableParent: false,
+            selectedFile: null
           };
         },
         methods: {
+          async save(handle) { 
+            const writable = await handle.createWritable({ keepExistingData: false });
+            await writable.write(this.result);
+            await writable.close();
+            this.resultOld = this.result
+          },
           async moveParent() {
             parents.splice(parents.length - 1, 1);
             files = await parents[parents.length - 1].values();
@@ -84,8 +106,10 @@
                 var reader = new FileReader();
                 reader.onload = () => {
                   this.result = reader.result;
+                  this.resultOld = this.result
                 };
                 reader.readAsBinaryString(await f.getFile());
+                this.selectedFile = f
                 return;
               case "directory":
                 parents.push(f);
