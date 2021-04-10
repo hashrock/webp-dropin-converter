@@ -15,8 +15,8 @@
             id="i-folder"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 32 32"
-            width="32"
-            height="32"
+            width="24"
+            height="24"
             fill="none"
             stroke="currentcolor"
             stroke-linecap="round"
@@ -25,7 +25,7 @@
           >
             <path d="M2 26 L30 26 30 7 14 7 10 4 2 4 Z M30 12 L2 12" />
           </svg>
-          <div v-if="parent" class="nav__selected">{{parent.name}}</div>
+          <div class="nav__selected"><span v-if="parent">{{parent.name}}</span></div>
           <button @click="openDir">Open</button>
         </div>
         <ul>
@@ -37,13 +37,13 @@
       </div>
 
       <div class="editor">
-        <div class="editor__nav">
+        <div class="editor__nav" v-if="selectedFile">
           <svg
             id="i-file"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 32 32"
-            width="32"
-            height="32"
+            width="24"
+            height="24"
             fill="none"
             stroke="currentcolor"
             stroke-linecap="round"
