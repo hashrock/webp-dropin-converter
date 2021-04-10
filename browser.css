@@ -1,69 +1,86 @@
-li {/* background: #333; *//* text-decoration: underline; */cursor: pointer;list-style: none;/* padding-left: 0; */padding: 0.5em;}
+li {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.5em;
+}
 html,
 body {
-height: 100%;
-margin: 0;
+  height: 100%;
+  margin: 0;
 }
 #app {
-display: flex;
-height: 100%;
+  display: flex;
+  height: 100%;
 }
 .nav {
-    width: 300px;
-    background: #222;
-    /* padding: 1em; */
-    color: white;
-    padding: 0;
-    /* display: flex; */
-    /* align-items: center; */
+  width: 300px;
+  background: #222;
+  color: white;
+  padding: 0;
 }
 
-ul{
-    padding: 0;
-    margin: 0;
-    font-size: 1em;
-    font-family: monospace;
+ul {
+  padding: 0;
+  margin: 0;
+  font-size: 1em;
+  font-family: monospace;
 }
-.editor{
-flex: 1;
-display: flex;
-flex-direction: column;
+.editor {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
-.editor__nav{display: flex;background: #555;color: #58ffcd;align-items: center;padding: 0.5em;}
-
-textarea {padding: 1em;flex: 1;color: white;background-color: #333;border: none;outline: none;tab-size: 2;word-break: break-all;}
-button{
-    background-color: #777;
-    color: white;
-    border: 1px solid black;
-    padding: 0.5em 0.75em;
-}
-button:hover{
-    background-color: #888;
+.editor__nav {
+  display: flex;
+  background: #555;
+  color: #58ffcd;
+  align-items: center;
+  padding: 0.5em;
 }
 
-.nav {}
+textarea {
+  padding: 1em;
+  flex: 1;
+  color: white;
+  background-color: #333;
+  border: none;
+  outline: none;
+  tab-size: 2;
+  word-break: break-all;
+}
+button {
+  background-color: #777;
+  color: white;
+  border: 1px solid black;
+  padding: 0.5em 0.75em;
+}
+button:hover {
+  background-color: #888;
+}
+
+.nav {
+}
 
 .nav__current {
-    display: flex;
-    padding: 0.5em;
-    align-items: center;
+  display: flex;
+  padding: 0.5em;
+  align-items: center;
 }
 
 .nav__selected {
-    flex: 1;
-    padding: 0 0.5em;
+  flex: 1;
+  padding: 0 0.5em;
 }
 
 .editor__selected {
-    padding: 0 0.5em;
-    flex: 1;
+  padding: 0 0.5em;
+  flex: 1;
 }
 
 li:hover {
-    background: #444;
+  background: #444;
 }
 
 li.selected {
-    color: #58ffcd;
+  color: #58ffcd;
 }
