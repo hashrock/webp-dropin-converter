@@ -5,45 +5,29 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <style>
-      li {
-        text-decoration: underline;
-        cursor: pointer;
-      }
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-      }
-      #app {
-        display: flex;
-        height: 100%;
-      }
-      .nav {
-        width: 300px;
-        padding: 1em;
-      }
-      .editor{
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-      }
-      .editor__nav{
-        display: flex;
-      }
-
-      textarea {
-        padding: 1em;
-        flex: 1;
-        color: white;
-        background-color: #333;
-      }
-    </style>
+    <link rel="stylesheet" href="browser.css" />
   </head>
   <body>
     <div id="app">
       <div class="nav">
-        <button @click="openDir">Open</button>
+        <div class="nav__current">
+          <svg
+            id="i-folder"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 32 32"
+            width="32"
+            height="32"
+            fill="none"
+            stroke="currentcolor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          >
+            <path d="M2 26 L30 26 30 7 14 7 10 4 2 4 Z M30 12 L2 12" />
+          </svg>
+          <div v-if="parent" class="nav__selected">{{parent.name}}</div>
+          <button @click="openDir">Open</button>
+        </div>
         <ul>
           <li v-if="enableParent" @click="moveParent()">../</li>
           <li v-for="f in files" @click="open(f)">
@@ -54,10 +38,26 @@
 
       <div class="editor">
         <div class="editor__nav">
+          <svg
+            id="i-file"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 32 32"
+            width="32"
+            height="32"
+            fill="none"
+            stroke="currentcolor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          >
+            <path d="M6 2 L6 30 26 30 26 10 18 2 Z M18 2 L18 10 26 10" />
+          </svg>
+          <div v-if="selectedFile" class="editor__selected">
+            {{selectedFile.name}} <span v-if="result !== resultOld"> *</span>
+          </div>
           <button @click="save(selectedFile)">Save</button>
-          <div v-if="selectedFile">{{selectedFile.name}} <span v-if="result !== resultOld"> *</span></div>
         </div>
-        <textarea v-model="result"></textarea>
+        <textarea v-model="result" spellcheck="false"></textarea>
       </div>
     </div>
 
@@ -81,24 +81,28 @@
             result: "",
             resultOld: "",
             enableParent: false,
-            selectedFile: null
+            selectedFile: null,
+            parent: null,
           };
         },
         methods: {
-          async save(handle) { 
-            const writable = await handle.createWritable({ keepExistingData: false });
+          async save(handle) {
+            const writable = await handle.createWritable({
+              keepExistingData: false,
+            });
             await writable.write(this.result);
             await writable.close();
-            this.resultOld = this.result
+            this.resultOld = this.result;
           },
           async moveParent() {
             parents.splice(parents.length - 1, 1);
+            this.parent = parents[parents.length - 1];
             files = await parents[parents.length - 1].values();
             this.files = [];
             for await (const entry of files) {
               this.files.push(entry);
             }
-            this.enableParent = parents.length > 1
+            this.enableParent = parents.length > 1;
           },
           async open(f) {
             switch (f.kind) {
@@ -106,10 +110,10 @@
                 var reader = new FileReader();
                 reader.onload = () => {
                   this.result = reader.result;
-                  this.resultOld = this.result
+                  this.resultOld = this.result;
                 };
                 reader.readAsBinaryString(await f.getFile());
-                this.selectedFile = f
+                this.selectedFile = f;
                 return;
               case "directory":
                 parents.push(f);
@@ -118,16 +122,19 @@
                 for await (const entry of files) {
                   this.files.push(entry);
                 }
-                this.enableParent = parents.length > 1
+                this.parent = f;
+                this.enableParent = parents.length > 1;
                 return;
             }
           },
           async openDir() {
             parents = [];
-            parents.push(await window.showDirectoryPicker());
-            if (!parents[0]) {
+            const f = await window.showDirectoryPicker();
+            if (!f) {
               return;
             }
+            parents.push(f);
+            this.parent = f;
             files = await parents[parents.length - 1].values();
 
             this.files = [];
